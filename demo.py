@@ -40,10 +40,10 @@ def parse_each_hero_json(json_path, save_root):
     hero_name = json_path.split('_')[-1].split('.')[0]
     print("############## hero name:", hero_name)
 
-    def process_each_pifu(each_pifu):
+    def process_each_pifu(each_pifu, content):
         save_path = os.path.join(save_root, hero_name, each_pifu)
         os.makedirs(save_path, exist_ok=True)
-        total_voices = res["yylbzt_9132"]
+        total_voices = content["yylbzt_9132"]
         for each_voice in tqdm.tqdm(total_voices):
             url = "https:" + each_voice['yywjzt_5304']
             label = str(each_voice['yywbzt_1517'][:-1])
@@ -68,19 +68,19 @@ def parse_each_hero_json(json_path, save_root):
     if isinstance(res, dict): # 只有一个皮肤的语音
         pifu_name = res["pfmczt_7754"]
         print("########## 皮肤：", pifu_name)
-        process_each_pifu(pifu_name)
+        process_each_pifu(pifu_name, res)
 
     elif isinstance(res, list): # 多个皮肤的语音
         for i in range(len(res)):
             pifu_name = res[i]["pfmczt_7754"]
             print("########## 皮肤：", pifu_name)
-            process_each_pifu(pifu_name)
+            process_each_pifu(pifu_name, res[i])
 
 
 if __name__ == '__main__':
     save_root = './raw_voices'
     voice_json_path = './voice_json'
     get_herovoice_json(voice_json_path)
-    for name in os.listdir(voice_json_path)[48:]:
+    for name in os.listdir(voice_json_path):
         json_path = os.path.join(voice_json_path, name)
         parse_each_hero_json(json_path, save_root)
